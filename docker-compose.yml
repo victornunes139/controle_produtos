@@ -1,0 +1,30 @@
+# v2 syntax
+version: '2'
+
+# Named volumes
+volumes:
+  # Postgres Data
+  controle-produtos-data:
+    driver: local
+services:
+  # Postgres (10.3)
+  postgres:
+    image: postgres:10.3
+    container_name: produtos-postgres
+    volumes:
+      - controle-produtos-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=controle_produtos
+      - POSTGRES_USER=root
+  app:
+    image: ambientum/php:7.2-nginx
+    container_name: produtos-api
+    volumes:
+      - .:/var/www/app
+    ports:
+      - "8080:8080"
+    links:
+      - postgres
